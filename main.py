@@ -1,5 +1,5 @@
 
-with open('sudoku_mini.txt') as d:
+with open('test.txt') as d:
     lines = d.read().splitlines()
 
 info_row = lines[2].split(" ")
@@ -8,9 +8,9 @@ no_rows = int(info_row[3])
 
 clauses = []
 
-for i in range(3, no_rows + 1):
+for i in range(3, no_rows + 3):
 
-    clause = lines[i].split(" ")[:-2]
+    clause = lines[i].split(" ")[:-1]
     actual_clause = [0 for k in range(no_variables + 1)]
 
     for j in range(len(clause)):
@@ -21,6 +21,9 @@ for i in range(3, no_rows + 1):
             actual_clause[-1 * number] = -1
 
     clauses.append(actual_clause)
+
+print(clauses)
+
 
 def find_variables(clauses, final_variables):
 
@@ -38,15 +41,22 @@ def find_variables(clauses, final_variables):
 
                 flag = True
 
+                # fix how we delete the unneeded clauses
+
+                delete = []
+
                 for a in range(len(clauses)):
 
                     acl = clauses[a]
 
                     if acl[cl] == value:
-                        clauses = clauses[:a] + clauses[a + 1:]
+                        delete.append(a)
+                        #clauses = clauses[:a] + clauses[a + 1:]
                     elif acl[cl] == -1 * value:
                         acl[cl] = 0
                         clauses[a] = acl
+
+                clauses = [clauses[x] for x in range(len(clauses)) if x not in delete]
 
             elif not (1 in clauses[cl] or -1 in clauses[cl]):
 
@@ -70,15 +80,20 @@ def find_variables(clauses, final_variables):
                     temp_variables[var_no] = var_val
                     temp_clauses = temp_clauses[1:]
 
+                    delete = []
+
                     for a in range(len(temp_clauses)):
 
                         acl = temp_clauses[a]
 
                         if acl[var_no] == var_val:
-                            temp_clauses = temp_clauses[:a] + temp_clauses[a + 1:]
+                            delete.append(a)
+                            #temp_clauses = temp_clauses[:a] + temp_clauses[a + 1:]
                         elif acl[var_no] == -1 * var_val:
                             acl[var_no] = 0
                             temp_clauses[a] = acl
+
+                    temp_clauses = [temp_clauses[x] for x in range(len(temp_clauses)) if x not in delete]
 
                     tcl, tvar, found = find_variables(temp_clauses, temp_variables)
 
