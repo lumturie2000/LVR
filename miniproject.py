@@ -131,7 +131,7 @@ def find_variables(clauses, variables):
     return clauses, variables, False
 
 
-name = "sudoku_mini"
+name = "sudoku_hard"
 task_name = name + ".txt"
 solution_name = name + "_solution.txt"
 
@@ -162,11 +162,30 @@ starting_variables = [0 for var in range(no_columns + 1)]
 
 final_clauses, final_variables, found_solution = find_variables(starting_clauses, starting_variables)
 
-if found_solution:
-    variables_index_values = [str(index * final_variables[index]) for index in
+final_variables_values = [index * final_variables[index] for index in
                               range(len(final_variables)) if final_variables[index] != 0]
+
+if found_solution:
+
+    variables_index_values = [str(final_variables_value) for final_variables_value in
+                              final_variables_values]
+
+    with open(solution_name) as data:
+        solution = data.readline()
+
+    solution_values = [int(value) for value in solution.split(" ")[:-1]]
+
+    match = (len(final_variables_values) == len(solution_values))
+
+    for solution_value in solution_values:
+        if not solution_value in final_variables_values:
+            match = False
+
+    print(match)
     variables_string = " ".join(variables_index_values)
     print(variables_string)
+
 else:
+
     print(False)
 
