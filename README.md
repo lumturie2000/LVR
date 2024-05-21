@@ -1,2 +1,2 @@
 # LVR
-Exercises and Mini Project
+Main and Mini Project
