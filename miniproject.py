@@ -1,6 +1,7 @@
 
 import copy
 
+
 # main function, responsible for computing the values of variables
 def find_variables(clauses, variables):
 
@@ -131,7 +132,10 @@ def find_variables(clauses, variables):
     return clauses, variables, False
 
 
+# start of the actual program
 name = "sudoku_hard"
+compare = False
+
 task_name = name + ".txt"
 solution_name = name + "_solution.txt"
 
@@ -160,32 +164,37 @@ for i in range(3, len(lines)):
 
 starting_variables = [0 for var in range(no_columns + 1)]
 
+# we call our main function
 final_clauses, final_variables, found_solution = find_variables(starting_clauses, starting_variables)
 
+# we save our solution in the shape of a list of positive or negative numbers
+# based on the variables' values
 final_variables_values = [index * final_variables[index] for index in
                               range(len(final_variables)) if final_variables[index] != 0]
 
 if found_solution:
 
+    if compare:
+
+        # we can optionally compare our results to the given solution
+        with open(solution_name) as data:
+            solution = data.readline()
+
+        solution_values = [int(value) for value in solution.split(" ")[:-1]]
+
+        matches = [(solution_value in final_variables_values) for solution_value in solution_values]
+        match = (len(final_variables_values) == len(solution_values)) and all(matches)
+
+        print(match)
+
     variables_index_values = [str(final_variables_value) for final_variables_value in
                               final_variables_values]
 
-    with open(solution_name) as data:
-        solution = data.readline()
-
-    solution_values = [int(value) for value in solution.split(" ")[:-1]]
-
-    match = (len(final_variables_values) == len(solution_values))
-
-    for solution_value in solution_values:
-        if not solution_value in final_variables_values:
-            match = False
-
-    print(match)
     variables_string = " ".join(variables_index_values)
     print(variables_string)
 
 else:
 
+    # if the program doesn't find a solution, we simply print out "False"
     print(False)
 
