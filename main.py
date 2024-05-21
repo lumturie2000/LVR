@@ -1,4 +1,6 @@
 
+import copy
+
 # main function, responsible for computing the values of variables
 def find_variables(clauses, variables):
 
@@ -15,8 +17,7 @@ def find_variables(clauses, variables):
         clause = clauses[cl]
         # checks what variables are in the clause
         check = [ch for ch in range(len(clause)) if clause[ch] != 0]
-        print("clause and check:")
-        print(clause)
+        
         # if there is only one variable in the clause
         if len(check) == 1:
 
@@ -24,8 +25,6 @@ def find_variables(clauses, variables):
             index = int(check[0])
             # we get the expected value, either 1 or -1
             value = clause[index]
-            print(index)
-            print(value)
             # if this variable is already set to the opposite value,
             # then we have a contradiction and this combination of
             # variable values is incorrect
@@ -78,8 +77,9 @@ def find_variables(clauses, variables):
     # if there aren't any singletons, then we have to just try and add a
     # variable value
     for clause_no in range(number_of_clauses):
-        for var_no in range(number_of_variables):
-
+        # we ignore the zero at the beginning
+        for var_no in range(1, number_of_variables):
+            
             # we get the current variable value in the current clause
             var_val = clauses[clause_no][var_no]
 
@@ -87,16 +87,17 @@ def find_variables(clauses, variables):
             if var_val == 0:
                 continue
 
-            temp_clauses = clauses.copy()
+            temp_clauses = copy.deepcopy(clauses)
             temp_variables = variables.copy()
-
+            
             # we add the variable value to the variable value combination
             # and delete the current clause
             temp_variables[var_no] = var_val
             temp_clauses = temp_clauses[:clause_no] + temp_clauses[clause_no+1:]
-
+            
             no_temp_clauses = number_of_clauses - 1
-
+            
+            # we update the clauses and the clauses list as before
             incorrect = False
             delete = []
 
@@ -107,25 +108,30 @@ def find_variables(clauses, variables):
                 if acl[var_no] == var_val:
                     delete.append(a)
                 elif acl[var_no] == -1 * var_val:
-                    temp_clauses[a][var_no] = 0
+                    acl[var_no] = 0
+                    temp_clauses[a] = acl
                     if all(val == 0 for val in temp_clauses[a]):
                         incorrect = True
                         break
-
+            
+            # if there is a mistake, we move on to a different possible solution
             if incorrect:
                 continue
-
+            
             temp_clauses = [temp_clauses[x] for x in range(len(temp_clauses)) if x not in delete]
-
+            
+            # we call the main function again, checking for a possible solution
+            # with the current temp combination
             tcl, tvar, found = find_variables(temp_clauses, temp_variables)
 
+            # if we find a solution with this combination, we simply return it
             if found:
                 return tcl, tvar, found
 
     return clauses, variables, False
 
 
-name = "test"
+name = "sudoku_mini"
 task_name = name + ".txt"
 solution_name = name + "_solution.txt"
 
@@ -153,7 +159,7 @@ for i in range(3, len(lines)):
 
 
 starting_variables = [0 for var in range(no_columns + 1)]
-print(starting_clauses)
+
 final_clauses, final_variables, found_solution = find_variables(starting_clauses, starting_variables)
 
 if found_solution:
