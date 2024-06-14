@@ -6,10 +6,9 @@ We've already presented the Mini Project (miniproject.py and test.txt) to the pr
 
 The Main Project consists of tasks 
 
-~ 1.1*, 1.2, 1.3, 1.5
+~ 1.1*, 1.2, 1.3, 1.4, 1.5
 
 ~ 2.3, 2.5
 
-Missing 1.4
-
-*1.1 shows an error I was unable to fix but the function itself still works correctly (check the examples just below)
+*1.1 shows an error I was unable to fix but the function itself still works correctly
+(check the examples just below), it is in its own .lean file
