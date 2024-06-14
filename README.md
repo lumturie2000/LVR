@@ -11,4 +11,4 @@ The Main Project consists of tasks
 ~ 2.3, 2.5
 
 *1.1 shows an error I was unable to fix but the function itself still works correctly
-(check the examples just below), it is in its own .lean file
+(check the examples just below), it is in its own .lean file (oneone.lean)
