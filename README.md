@@ -15,3 +15,5 @@ The Main Project consists of tasks
 
 *2.4 is there, 2.5 was scrapped
 
+All the proper files are in project/Project/
+
