@@ -13,19 +13,16 @@ mutual
     mysum n n x
 
   def catalan (n : Nat) :=
-    if n = 0 then 0
+    if n = 0 then 1
     else mainsum (n - 1) catalan
 
 end
 
 -- Task 1.2: Formalize the concept of plane trees.
 
-inductive plane_tree : Type
+inductive plane_tree
 | leaf
-| node : (T1 T2 : plane_tree) -> plane_tree
-deriving Repr
-
-#eval plane_tree.leaf
+| node : List plane_tree -> plane_tree
 
 -- Task 1.3: Formalize the concept of full binary trees.
 
@@ -34,16 +31,31 @@ inductive full_bin_tree : Type
 | node : (T1 T2 : full_bin_tree) -> full_bin_tree
 deriving Repr
 
-
+#check full_bin_tree.leaf
+#eval full_bin_tree.node full_bin_tree.leaf full_bin_tree.leaf
 
 -- Task 1.4: Construct the type of full binary trees with n nodes,
 --            not counting the leaves.
 
 -- Task 1.5: Define the type of ballot sequences of length n.
 
-inductive ballot_sequence : Type
-|
-|
+inductive vote
+| A
+| B
+
+open vote
+
+def valid_sequence (votes : List vote) : Bool :=
+  votes.length % 2 = 0 ∧
+  let n := votes.length / 2
+  let (amount_of_A, amount_of_B, check) := votes.foldl (λ (amount : Nat × Nat × Bool) v =>
+    match v with
+    | A => (amount.1 + 1, amount.2.1, amount.2.2 ∧ (amount.2.1 ≤ amount.1 + 1))
+    | B => (amount.1, amount.2.1 + 1, amount.2.2 ∧ (amount.2.1 + 1 ≤ amount.1)))
+    (0, 0, True)
+  amount_of_A = n ∧ amount_of_B = n ∧ check
+
+def valid_ballot_sequence : Type := { votes : List vote // valid_sequence votes }
 
 -- Task 2.1: Construct a bijection.
 
